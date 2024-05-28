@@ -19,7 +19,7 @@ treatment_nonresponders = treatment_group[treatment_group['Response'] == 0]
 control_responders = control_group[control_group['Response'] == 1]
 control_nonresponders = control_group[control_group['Response'] == 0]
 
-def perform_bootstrap_t_tests(group, n_bootstraps=5):
+def perform_bootstrap_t_tests(group, n_bootstraps=1000):
     miRNA_columns = group.columns[5:]  # miRNA expression columns
     bootstrap_results = pd.DataFrame(index=miRNA_columns, columns=range(n_bootstraps))
     directionality_results = pd.DataFrame(index=miRNA_columns, columns=range(n_bootstraps))
@@ -61,6 +61,12 @@ significant_treatment_responders['Response'] = 1
 significant_treatment_nonresponders['Response'] = 0
 significant_control_responders['Response'] = 1
 significant_control_nonresponders['Response'] = 0
+
+# sort by corrected p-value
+significant_treatment_responders = significant_treatment_responders.sort_values('corrected_p_value')
+significant_treatment_nonresponders = significant_treatment_nonresponders.sort_values('corrected_p_value')
+significant_control_responders = significant_control_responders.sort_values('corrected_p_value')
+significant_control_nonresponders = significant_control_nonresponders.sort_values('corrected_p_value') 
 
 # Save the results to CSV files
 output_dir = './data/'
